@@ -1,6 +1,5 @@
 import {
   randBoolean,
-  randEmail,
   randFloat,
   randFood,
   randFullName,
@@ -13,7 +12,7 @@ const prisma = new PrismaClient();
 async function seed() {
   // Create one gueset
   const guest = await prisma.guest.create({
-    data: { email: randEmail(), name: randFullName() },
+    data: { name: randFullName() },
   });
 
   // Create historical orders for guest

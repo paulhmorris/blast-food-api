@@ -9,6 +9,14 @@ router.use(express.json());
 /** Routes */
 router.use("/", routes);
 
+/** 404 */
+router.use((req, res, next) => {
+  const error = new Error("not found");
+  return res.status(404).json({
+    message: error.message,
+  });
+});
+
 const PORT: any = process.env.PORT ?? 6060;
 
 router.listen(PORT, () =>

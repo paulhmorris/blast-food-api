@@ -1,24 +1,27 @@
-import { PrismaClient } from "@prisma/client";
+import { Item, PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 
 const prisma = new PrismaClient();
 
 const getAllOrders = async (_req: Request, res: Response) => {
   const orders = await prisma.order.findMany();
-  res.status(200).json(orders);
+  res.json(orders);
 };
 
 const getOrderById = async (req: Request, res: Response) => {
   const { id } = req.params;
+  if (isNaN(parseInt(id))) {
+    res.status(400).send(`Error parsing order id: ${id}`);
+  }
   const order = await prisma.order.findFirst({
     where: { id: parseInt(id) },
-    include: { guest: true },
+    include: { guest: true, items: true },
   });
   if (!order) {
     res.status(404).send(`No order found with id ${id}.`);
   }
 
-  if (order) res.status(200).json(order);
+  if (order) res.json(order);
 };
 
 const createOrder = async (req: Request, res: Response) => {
@@ -41,10 +44,64 @@ const updateOrder = async (req: Request, res: Response) => {
   res.json(order);
 };
 
+const getOrderTotal = async (req: Request, res: Response) => {
+  const { items }: { items: number[] } = req.body;
+
+  const data = await prisma.item.aggregate({
+    _sum: { price: true },
+    where: {
+      id: { in: items },
+    },
+  });
+
+  if (data._sum.price === null) {
+    res.status(400).json({ message: "Error getting order total" });
+    return;
+  }
+
+  const subTotal = Number(data._sum.price);
+  const tax = Number((subTotal * 0.0825).toFixed(2));
+  const total = subTotal + tax;
+
+  res.json({ subTotal, tax, total });
+};
+
+const placeOrder = async (req: Request, res: Response) => {
+  const { guestId, items }: { guestId: string; items: Pick<Item, "id">[] } =
+    req.body;
+  if (!guestId) {
+    res.status(400).json({
+      message: "Error placing order, guestId required",
+      data: req.body,
+    });
+  }
+  if (!items || items.length === 0) {
+    res.status(400).json({
+      message: "Error placing order, cannot create an order with no items",
+    });
+  }
+
+  const order = await prisma.order.create({
+    data: {
+      guestId,
+      createdAt: new Date(),
+      items: {
+        connect: items,
+      },
+    },
+    include: { items: true },
+  });
+  if (order) {
+    res.json(order);
+  }
+};
+
 export default {
   getAllOrders,
   getOrderById,
   createOrder,
   updateOrder,
   deleteOrder,
+  placeOrder,
+  getOrderTotal,
 };

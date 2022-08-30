@@ -11,6 +11,9 @@ router.put("/guests/:id", guestsController.updateGuest);
 router.delete("/guests/:id", guestsController.deleteGuest);
 router.post("/guests", guestsController.createGuest);
 
+router.post("/orders/place", ordersController.placeOrder);
+router.post("/orders/total", ordersController.getOrderTotal);
+
 router.get("/orders", ordersController.getAllOrders);
 router.get("/orders/:id", ordersController.getOrderById);
 router.put("/orders/:id", ordersController.updateOrder);
