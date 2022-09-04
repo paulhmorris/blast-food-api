@@ -1,29 +1,52 @@
 import express from "express";
-import guestsController from "../controllers/guests";
-import itemsController from "../controllers/items";
-import ordersController from "../controllers/orders";
+import {
+  createGuest,
+  deleteGuest,
+  getAllGuests,
+  getGuestById,
+  updateGuest,
+} from "../controllers/guests";
+import {
+  createItem,
+  deleteItem,
+  getAllItems,
+  getItemById,
+  updateItem,
+} from "../controllers/items";
+
+import {
+  completeOrder,
+  createOrder,
+  deleteOrder,
+  getAllOrders,
+  getOrderById,
+  getOrderTotal,
+  placeOrder,
+  updateOrder,
+} from "../controllers/orders";
 
 const router = express.Router();
 
-router.get("/guests", guestsController.getAllGuests);
-router.get("/guests/:id", guestsController.getGuestById);
-router.put("/guests/:id", guestsController.updateGuest);
-router.delete("/guests/:id", guestsController.deleteGuest);
-router.post("/guests", guestsController.createGuest);
+router.get("/guests", getAllGuests);
+router.get("/guests/:id", getGuestById);
+router.get("/items", getAllItems);
+router.get("/items/:id", getItemById);
+router.get("/orders", getAllOrders);
+router.get("/orders/:id", getOrderById);
 
-router.post("/orders/place", ordersController.placeOrder);
-router.post("/orders/total", ordersController.getOrderTotal);
+router.post("/orders/place", placeOrder);
+router.post("/orders/total", getOrderTotal);
+router.post("/orders/complete/:id", completeOrder);
+router.post("/orders/create", createOrder);
+router.post("/guests/create", createGuest);
+router.post("/items/create", createItem);
 
-router.get("/orders", ordersController.getAllOrders);
-router.get("/orders/:id", ordersController.getOrderById);
-router.put("/orders/:id", ordersController.updateOrder);
-router.delete("/orders/:id", ordersController.deleteOrder);
-router.post("/orders", ordersController.createOrder);
+router.put("/orders/:id", updateOrder);
+router.put("/guests/:id", updateGuest);
+router.put("/items/:id", updateItem);
 
-router.get("/items", itemsController.getAllItems);
-router.get("/items/:id", itemsController.getItemById);
-router.put("/items/:id", itemsController.updateItem);
-router.delete("/items/:id", itemsController.deleteItem);
-router.post("/items", itemsController.createItem);
+router.delete("/orders/:id", deleteOrder);
+router.delete("/items/:id", deleteItem);
+router.delete("/guests/:id", deleteGuest);
 
 export = router;

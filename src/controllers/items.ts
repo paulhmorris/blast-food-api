@@ -40,4 +40,4 @@ const updateItem = async (req: Request, res: Response) => {
   res.json(item);
 };
 
-export default { getAllItems, getItemById, createItem, deleteItem, updateItem };
+export { getAllItems, getItemById, createItem, deleteItem, updateItem };

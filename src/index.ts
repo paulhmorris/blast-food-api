@@ -10,7 +10,7 @@ router.use(express.json());
 router.use("/", routes);
 
 /** 404 */
-router.use((req, res, next) => {
+router.use((_req, res) => {
   const error = new Error("not found");
   return res.status(404).json({
     message: error.message,

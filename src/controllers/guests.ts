@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 const prisma = new PrismaClient();
 
 const getAllGuests = async (_req: Request, res: Response) => {
-  const guests = await prisma.guest.findMany();
+  const guests = await prisma.guest.findMany({ include: { orders: true } });
   res.status(200).json(guests);
 };
 
@@ -42,10 +42,4 @@ const updateGuest = async (req: Request, res: Response) => {
   res.json(guest);
 };
 
-export default {
-  getAllGuests,
-  getGuestById,
-  createGuest,
-  deleteGuest,
-  updateGuest,
-};
+export { getAllGuests, getGuestById, createGuest, deleteGuest, updateGuest };
