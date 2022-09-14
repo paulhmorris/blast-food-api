@@ -3,7 +3,7 @@ import routes from "./routes";
 
 const router: Express = express();
 
-router.use(express.urlencoded({ extended: false }));
+router.use(express.urlencoded({ extended: true }));
 router.use(express.json());
 
 /** Routes */

@@ -20,7 +20,6 @@ import {
   deleteOrder,
   getAllOrders,
   getOrderById,
-  getOrderTotal,
   placeOrder,
   updateOrder,
 } from "../controllers/orders";
@@ -35,7 +34,6 @@ router.get("/orders", getAllOrders);
 router.get("/orders/:id", getOrderById);
 
 router.post("/orders/place", placeOrder);
-router.post("/orders/total", getOrderTotal);
 router.post("/orders/complete/:id", completeOrder);
 router.post("/orders/create", createOrder);
 router.post("/guests/create", createGuest);

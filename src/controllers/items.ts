@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 
-const prisma = new PrismaClient();
+import { prisma } from "../../prisma/db";
 
 const getAllItems = async (_req: Request, res: Response) => {
   const items = await prisma.item.findMany();
@@ -11,7 +10,7 @@ const getAllItems = async (_req: Request, res: Response) => {
 const getItemById = async (req: Request, res: Response) => {
   const { id } = req.params;
   const item = await prisma.item.findFirst({
-    where: { id: parseInt(id) },
+    where: { id },
   });
   if (!item) {
     res.status(404).send(`No item found with id ${id}.`);
@@ -27,14 +26,14 @@ const createItem = async (req: Request, res: Response) => {
 
 const deleteItem = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const item = await prisma.item.delete({ where: { id: parseInt(id) } });
+  const item = await prisma.item.delete({ where: { id } });
   res.json(item);
 };
 
 const updateItem = async (req: Request, res: Response) => {
   const { id } = req.params;
   const item = await prisma.item.update({
-    where: { id: parseInt(id) },
+    where: { id },
     data: { ...req.body },
   });
   res.json(item);

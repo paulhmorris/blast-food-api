@@ -1,46 +1,61 @@
 import {
+  rand,
   randBoolean,
   randFloat,
   randFood,
   randFullName,
+  randNumber,
   randPastDate,
 } from "@ngneat/falso";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
+const foodNames = randFood({ origin: "italy", length: 1000 });
 
 async function seed() {
-  // Create one gueset
+  // Create one guest
   const guest = await prisma.guest.create({
     data: { name: randFullName() },
   });
 
+  // Create items
+  for (let i = 0; i < 25; i++) {
+    const food = rand(foodNames);
+    console.log(food);
+    await prisma.item.create({
+      data: {
+        name: food,
+        price: randFloat({ min: 1, max: 10, fraction: 2 }),
+      },
+    });
+  }
+
+  const allItems = await prisma.item.findMany();
+
   // Create historical orders for guest
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 25; i++) {
     await prisma.order.create({
       data: {
         guestId: guest.id,
         createdAt: randPastDate(),
         completedAt: randBoolean() ? randPastDate() : null,
-        items: {
-          create: [
-            {
-              name: randFood({ origin: "italy" }),
-              price: randFloat({ min: 1, max: 10, fraction: 2 }),
-            },
-            {
-              name: randFood({ origin: "italy" }),
-              price: randFloat({ min: 1, max: 10, fraction: 2 }),
-            },
-            {
-              name: randFood({ origin: "italy" }),
-              price: randFloat({ min: 1, max: 10, fraction: 2 }),
-            },
-            {
-              name: randFood({ origin: "italy" }),
-              price: randFloat({ min: 1, max: 10, fraction: 2 }),
-            },
-          ],
+        orderItems: {
+          createMany: {
+            data: [
+              {
+                itemId: rand(allItems).id,
+                quantity: randNumber({ min: 1, max: 3 }),
+              },
+              {
+                itemId: rand(allItems).id,
+                quantity: randNumber({ min: 1, max: 3 }),
+              },
+              {
+                itemId: rand(allItems).id,
+                quantity: randNumber({ min: 1, max: 3 }),
+              },
+            ],
+          },
         },
       },
     });

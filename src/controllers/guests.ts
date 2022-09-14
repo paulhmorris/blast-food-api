@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 
-const prisma = new PrismaClient();
+import { prisma } from "../../prisma/db";
 
 const getAllGuests = async (_req: Request, res: Response) => {
   const guests = await prisma.guest.findMany({ include: { orders: true } });
