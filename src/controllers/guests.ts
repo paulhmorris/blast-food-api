@@ -4,7 +4,7 @@ import { prisma } from "../../prisma/db";
 
 const getAllGuests = async (_req: Request, res: Response) => {
   const guests = await prisma.guest.findMany({ include: { orders: true } });
-  res.status(200).json(guests);
+  return res.json(guests);
 };
 
 const getGuestById = async (req: Request, res: Response) => {
@@ -14,22 +14,20 @@ const getGuestById = async (req: Request, res: Response) => {
     include: { orders: true },
   });
   console.log(req.params);
-  if (!guest) {
-    res.status(404).send(`No guest found with id ${id}.`);
-  }
+  if (!guest) return res.status(404).send(`No guest found with id ${id}.`);
 
-  if (guest) res.status(200).json(guest);
+  return res.json(guest);
 };
 
 const createGuest = async (req: Request, res: Response) => {
   const guest = await prisma.guest.create({ data: { ...req.body } });
-  res.json(guest);
+  return res.json(guest);
 };
 
 const deleteGuest = async (req: Request, res: Response) => {
   const { id } = req.params;
   const guest = await prisma.guest.delete({ where: { id } });
-  res.json(guest);
+  return res.json(guest);
 };
 
 const updateGuest = async (req: Request, res: Response) => {
@@ -38,7 +36,7 @@ const updateGuest = async (req: Request, res: Response) => {
     where: { id },
     data: { ...req.body },
   });
-  res.json(guest);
+  return res.json(guest);
 };
 
 export { getAllGuests, getGuestById, createGuest, deleteGuest, updateGuest };
