@@ -19,6 +19,7 @@ import {
   createOrder,
   deleteOrder,
   getAllOrders,
+  getOpenOrders,
   getOrderById,
   placeOrder,
   updateOrder,
@@ -31,6 +32,7 @@ router.get("/guests/:id", getGuestById);
 router.get("/items", getAllItems);
 router.get("/items/:id", getItemById);
 router.get("/orders", getAllOrders);
+router.get("/orders/open", getOpenOrders);
 router.get("/orders/:id", getOrderById);
 
 router.post("/orders/place", placeOrder);

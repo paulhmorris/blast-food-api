@@ -10,6 +10,14 @@ const getAllOrders = async (_req: Request, res: Response) => {
   return res.json(orders);
 };
 
+const getOpenOrders = async (_req: Request, res: Response) => {
+  const orders = await prisma.order.findMany({
+    where: { completedAt: null },
+    include: { guest: true, orderItems: true },
+  });
+  return res.json(orders);
+};
+
 const getOrderById = async (req: Request, res: Response) => {
   const { id } = req.params;
   const order = await prisma.order.findFirst({
@@ -46,7 +54,7 @@ const completeOrder = async (req: Request, res: Response) => {
   const { id } = req.params;
   const order = await prisma.order.findFirst({ where: { id } });
   if (order?.completedAt) {
-    return res.status(400).send("Order is already completed");
+    return res.status(400).json({ message: "Order is already completed" });
   }
 
   const completedOrder = await prisma.order.update({
@@ -54,6 +62,7 @@ const completeOrder = async (req: Request, res: Response) => {
     data: { completedAt: new Date() },
   });
 
+  console.log(completedOrder);
   return res.json(completedOrder);
 };
 
@@ -64,7 +73,7 @@ interface PlaceOrderRequest {
 
 const placeOrder = async (req: Request, res: Response) => {
   const { guestName, items }: PlaceOrderRequest = req.body;
-  if (!items) {
+  if (items.length === 0) {
     return res.status(400).json({ error: "No items found", body: req.body });
   }
 
@@ -105,6 +114,7 @@ const placeOrder = async (req: Request, res: Response) => {
 
 export {
   getAllOrders,
+  getOpenOrders,
   getOrderById,
   createOrder,
   updateOrder,
