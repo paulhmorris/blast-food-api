@@ -8,7 +8,7 @@ import {
 } from "../controllers/guests";
 import {
   createItem,
-  deleteItem,
+  discontinueItem,
   getAllItems,
   getItemById,
   updateItem,
@@ -41,12 +41,12 @@ router.post("/orders/create", createOrder);
 router.post("/guests/create", createGuest);
 router.post("/items/create", createItem);
 
-router.put("/orders/:id", updateOrder);
-router.put("/guests/:id", updateGuest);
-router.put("/items/:id", updateItem);
+router.patch("/orders/:id", updateOrder);
+router.patch("/guests/:id", updateGuest);
+router.patch("/items/:id", updateItem);
+router.patch("/items/discontinue/:id", discontinueItem);
 
 router.delete("/orders/:id", deleteOrder);
-router.delete("/items/:id", deleteItem);
 router.delete("/guests/:id", deleteGuest);
 
 export = router;

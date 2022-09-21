@@ -21,7 +21,6 @@ async function seed() {
   // Create items
   for (let i = 0; i < 25; i++) {
     const food = rand(foodNames);
-    console.log(food);
     await prisma.item.create({
       data: {
         name: food,

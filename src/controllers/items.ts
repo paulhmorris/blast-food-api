@@ -3,7 +3,9 @@ import { Request, Response } from "express";
 import { prisma } from "../../prisma/db";
 
 const getAllItems = async (_req: Request, res: Response) => {
-  const items = await prisma.item.findMany();
+  const items = await prisma.item.findMany({
+    where: { isDiscontinued: false },
+  });
   return res.json(items);
 };
 
@@ -18,13 +20,18 @@ const getItemById = async (req: Request, res: Response) => {
 };
 
 const createItem = async (req: Request, res: Response) => {
-  const item = await prisma.item.create({ data: { ...req.body } });
+  const item = await prisma.item.create({
+    data: { ...req.body },
+  });
   return res.json(item);
 };
 
-const deleteItem = async (req: Request, res: Response) => {
+const discontinueItem = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const item = await prisma.item.delete({ where: { id } });
+  const item = await prisma.item.update({
+    where: { id },
+    data: { isDiscontinued: true },
+  });
   return res.json(item);
 };
 
@@ -37,4 +44,4 @@ const updateItem = async (req: Request, res: Response) => {
   return res.json(item);
 };
 
-export { getAllItems, getItemById, createItem, deleteItem, updateItem };
+export { getAllItems, getItemById, createItem, discontinueItem, updateItem };

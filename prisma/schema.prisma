@@ -34,8 +34,9 @@ model OrderItem {
 }
 
 model Item {
-  id         String      @id @default(uuid())
-  name       String
-  price      Decimal
-  orderItems OrderItem[]
+  id             String      @id @default(uuid())
+  name           String
+  price          Decimal
+  isDiscontinued Boolean     @default(false)
+  orderItems     OrderItem[]
 }
